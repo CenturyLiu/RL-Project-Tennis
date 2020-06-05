@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun  4 18:15:54 2020
+Created on Thu Jun  4 19:29:36 2020
 
-@author: centuryliu
+@author: shijiliu
 """
+
+
 
 from unityagents import UnityEnvironment
 
@@ -19,7 +21,7 @@ from collections import deque
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def create_env():
-    file_location = "/home/centuryliu/reinforcement_learning/deep-reinforcement-learning/p3_collab-compet/Tennis_Linux/"
+    file_location = "/home/shijiliu/self-learning/reinforcement-learning/deep-reinforcement-learning/p3_collab-compet/Tennis_Linux/"
     file_name = file_location + "Tennis.x86_64"
     env = UnityEnvironment(file_name=file_name)
     
@@ -50,9 +52,8 @@ def training():
     # config parameters
     
     number_of_episodes = 4000
-    episode_length = 800
+    episode_length = 1000
     
-    random_play_episodes = 1000
     
     random_seed = 4#np.random.randint(10000)
     
@@ -65,7 +66,7 @@ def training():
     score_deque = deque(maxlen = 100)
     
     # create ddpg agent for self play
-    agents = Agent(state_size, action_size, random_seed, 1)  # create only one ddpg agents
+    agents = Agent(state_size, action_size, random_seed, num_agents)  
     
     
     for i_episode in range(1,number_of_episodes + 1):
@@ -85,14 +86,11 @@ def training():
         
         for t in range(episode_length):
             actions = []
-            for ii in range(num_agents):
-                actions.append(agents.act(states[ii]))
-            env_actions = np.reshape(np.array(actions),(1,-1))
+            #for ii in range(num_agents):
+            #    actions.append(agents.act(states[ii]))
+            actions = agents.act(states)
+            env_actions = actions#np.reshape(np.array(actions),(1,-1))
             
-            if i_episode < random_play_episodes:
-                env_actions = 2 * np.random.rand(num_agents, action_size) - 1.0
-                env_actions = np.clip(env_actions,-1,1)
-                env_actions = np.reshape(env_actions,(1,-1))
             
             # play one step
             env_info = env.step(env_actions)[brain_name]
@@ -102,8 +100,8 @@ def training():
             episode_scores += rewards
             
             # store transition, learn if necessary
-            for i in range(num_agents):
-                agents.step(states[i], actions[i], rewards[i], next_states[i], dones[i], t)
+            for state, action, reward, next_state, done in zip(states, actions, rewards, next_states, dones):
+                agents.step(state, action, reward, next_state, done, t)
             
             states = next_states
             
@@ -124,9 +122,11 @@ def training():
             
         if np.mean(score_deque) >= 0.5:
             print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode, np.mean(score_deque)))
-            for i in range(num_agents):
-                torch.save(agents[i].actor_local.state_dict(), 'checkpoint_actor'+str(i) +'.pth')
-                torch.save(agents[i].critic_local.state_dict(), 'checkpoint_critic'+str(i)+'.pth')
+            #for i in range(num_agents):
+            #    torch.save(agents[i].actor_local.state_dict(), 'checkpoint_actor'+str(i) +'.pth')
+            #    torch.save(agents[i].critic_local.state_dict(), 'checkpoint_critic'+str(i)+'.pth')
+            torch.save(agents.actor_local.state_dict(),'checkpoint_actor.pth')
+            torch.save(agents.critic_local.state_dict(),'checkpoint_critic.pth')
             break
     env.close()
     return agents, agent_reward, score_full, random_seed

@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jun  4 19:28:39 2020
+
+@author: shijiliu
+"""
+
+
 import numpy as np
 import random
 import copy
@@ -9,7 +18,7 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 
-BUFFER_SIZE = int(1e6)  # replay buffer size
+BUFFER_SIZE = int(1e5)  # replay buffer size
 BATCH_SIZE = 128        # minibatch size
 GAMMA = 0.95            # discount factor
 TAU = 1e-3              # for soft update of target parameters
@@ -37,6 +46,7 @@ class Agent():
         self.state_size = state_size
         self.action_size = action_size
         self.seed = random.seed(random_seed)
+        self.num_agents = num_agents
 
         # Actor Network (w/ Target Network)
         self.actor_local = Actor(state_size, action_size, random_seed).to(device)
@@ -56,7 +66,7 @@ class Agent():
         
         self.noise_coef = 1
         
-        self.sigma = 0.95
+        self.sigma = 0.975
         
     
     def step(self, state, action, reward, next_state, done, timestep):
@@ -80,10 +90,7 @@ class Agent():
             action = self.actor_local(state).cpu().data.numpy()
         self.actor_local.train()
         if add_noise:
-            action += self.noise.sample()[0] * self.noise_coef#self.sigma * np.random.randn(self.action_size)#self.noise.sample()[0] * self.noise_coef
-            self.noise_coef -= DECAY_NOISE
-            if self.noise_coef  < 0.01:
-                self.noise_coef = 0.01
+            action += self.noise.sample() * self.noise_coef#self.sigma * np.random.randn(self.action_size)#self.noise.sample()[0] * self.noise_coef
         return np.clip(action, -1, 1)
 
     def reset(self):
@@ -95,7 +102,6 @@ class Agent():
         where:
             actor_target(state) -> action
             critic_target(state, action) -> Q-value
-
         Params
         ======
             experiences (Tuple[torch.Tensor]): tuple of (s, a, r, s', done) tuples 
@@ -131,12 +137,18 @@ class Agent():
 
         # ----------------------- update target networks ----------------------- #
         self.soft_update(self.critic_local, self.critic_target, TAU)
-        self.soft_update(self.actor_local, self.actor_target, TAU)                     
+        self.soft_update(self.actor_local, self.actor_target, TAU)     
+
+
+        # ----------------------- update noise coefficient --------------------  #
+        self.noise_coef -= DECAY_NOISE   
+        if self.noise_coef < 0.01:
+            self.noise_coef = 0.01
+        self.reset()
 
     def soft_update(self, local_model, target_model, tau):
         """Soft update model parameters.
         θ_target = τ*θ_local + (1 - τ)*θ_target
-
         Params
         ======
             local_model: PyTorch model (weights will be copied from)
