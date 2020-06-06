@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun  4 19:29:02 2020
+Created on Sat Jun  6 10:08:30 2020
+
 @author: shijiliu
 """
 
@@ -52,7 +53,7 @@ class Actor(nn.Module):
         """Build an actor (policy) network that maps states -> actions."""
         #x = F.relu(self.batchnorm_1(self.fc1(state)))
         if state.dim() != 1:
-            x = F.relu(self.batchnorm_1(self.fc1(state)))
+            x = F.relu(self.fc1(state))
         else:
             x = F.relu(self.fc1(state))
         
