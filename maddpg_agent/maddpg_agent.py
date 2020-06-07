@@ -139,3 +139,6 @@ class MADDPG:
         for actor in self.actors:
             actor.action_noise.reset()
         
+        self.noise_coef -= self.noise_coef_decay
+        if self.noise_coef < 0.01:
+            self.noise_coef = 0.01
