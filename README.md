@@ -61,7 +61,7 @@ Two trained agents playing tennis by controlling rackets to bounce a ball over a
   
     Create a maddpg agent with 2 seperate actor-networks. 
     
-   For task-solving detail, see the Report. 
+   For task-solving detail, see the [Report](https://github.com/CenturyLiu/RL-Project-Tennis/blob/master/tennis%20project%20report.pdf). 
 
 ## Part 4: Repository code usage
   This repository contains 6 different solution packages, please disregard the "draft" packages, which are failed trials. The useful packages are "self-play", "self-play-test" and "maddpg_agent", each one of these 3 packages contains a successful solution that can directly be used to solve the environment.
@@ -74,9 +74,9 @@ Two trained agents playing tennis by controlling rackets to bounce a ball over a
   
   *Note: remember to change the "file_location" to your location of storing the Tennis environment before use. file_location is defined in function "create_env()" in the main file for all 3 packages.* 
   
-  To see the difference of self_play and self-play-test, please refer to Report.
+  To see the difference of self_play and self-play-test, please refer to [Report](https://github.com/CenturyLiu/RL-Project-Tennis/blob/master/tennis%20project%20report.pdf).
   
-  It is recommended to take a quick glance at my Report since it discusses a **problem** about adding **batchnorm layer** in the agent model, which may lead to agent's **not able to solve** the environment even though the other parts of the code is correct.
+  If your agent just cannot solve the environemnt (hopefully that's not the case), my [Report](https://github.com/CenturyLiu/RL-Project-Tennis/blob/master/tennis%20project%20report.pdf) includes my **hypothesis** about adding **batchnorm layer** in the agent model, which may lead to agent's **not able to solve** the environment even though the other parts of the code is correct.
 
 ## Part 5: Demo for trained agent
 ![Demo of my trained maddpg agents](https://github.com/CenturyLiu/RL-Project-Tennis/blob/master/plots/tennis_demo.gif)
