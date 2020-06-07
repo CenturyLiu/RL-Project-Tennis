@@ -87,3 +87,10 @@ Two trained agents playing tennis by controlling rackets to bounce a ball over a
 
 ![maddpg_agent](https://github.com/CenturyLiu/RL-Project-Tennis/blob/master/plots/solution_maddpg_1225.png)
 > maddpg_agents solve the Tennis environment in 1225 episodes
+
+## Part 6: References
+|reference|reason|
+|--------------|------|
+| [maddpg algorithm](https://towardsdatascience.com/openais-multi-agent-deep-deterministic-policy-gradients-maddpg-9d2dad34c82)|better understand the maddpg algorithm|
+|[nunesma's reinfocement learning file](https://github.com/nunesma/reinforcement_learning/tree/master/p3_collab-compet)| referenced for my implementation of self-play|
+|udacity maddpg lab|referenced for my implementation of maddpg|
