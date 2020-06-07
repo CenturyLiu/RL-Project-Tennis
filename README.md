@@ -34,10 +34,56 @@ Two trained agents playing tennis by controlling rackets to bounce a ball over a
 
 
 ## Part 2: Getting started
+   0. Install python dependencies based on the instruction on [udacity deep reinforcement learning github repo](https://github.com/udacity/deep-reinforcement-learning)
+   
+   1. Install Tennis environment
+       - Linux: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Tennis/Tennis_Linux.zip)
+       
+       - Mac OSX: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Tennis/Tennis.app.zip)
+       
+      - Windows (32-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Tennis/Tennis_Windows_x86.zip)
+      
+      - Windows (64-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Tennis/Tennis_Windows_x86_64.zip)
+    
+    
+   (_For Windows users_) Check out [this link](https://support.microsoft.com/en-us/help/827218/how-to-determine-whether-a-computer-is-running-a-32-bit-version-or-64) if you need help with determining if your computer is running a 32-bit version or 64-bit version of the Windows operating system.
 
+   (_For AWS_) If you'd like to train the agent on AWS (and have not [enabled a virtual screen](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md)), then please use [this link](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Tennis/Tennis_Linux_NoVis.zip) to obtain the "headless" version of the environment.  You will **not** be able to watch the agent without enabling a virtual screen, but you will be able to train the agent.  (_To watch the agent, you should follow the instructions to [enable a virtual screen](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md), and then download the environment for the **Linux** operating system above._)
+   
 
 ## Part 3: Idea for solving the task
+  I approached the Tennis environment based on 2 different methods.
+  - Self play method
+  
+    Create a single ddpg network. The action of both tennis agents are chosen from this network. 
+    
+  - Multi-agent method
+  
+    Create a maddpg agent with 2 seperate actor-networks. 
+    
+   For task-solving detail, see the Report. 
 
 ## Part 4: Repository code usage
+  This repository contains 6 different solution packages, please disregard the "draft" packages, which are failed trials. The useful packages are "self-play", "self-play-test" and "maddpg_agent", each one of these 3 packages contains a successful solution that can directly be used to solve the environment.
+  
+  | solution package | model file | agent file(s) | main file| saved weights |
+  |------------------|------------|---------------|----------|---------------|
+  |self_play| model.py | ddpg_agent.py (Replaybuffer and OUNoise included in the same file)|training.py| actor: checkpoint_actor.pth;                                     critic: checkpoint_critic.pth| 
+  |self-play-test| model.py | ddpg_agent.py (Replaybuffer and OUNoise included in the same file)| training.py| actor: checkpoint_actor.pth;  critic: checkpoint_critic.pth|
+  |maddpg_agent| model.py|ddpg_actor.py; maddpg_agent.py; replaybuffer.py; OUNoise.py; param_update.py|training.py|actor 0: checkpoint_actor0.pth; actor 1: checkpoint_actor1.pth; critic: checkpoint_centralized_critic.pth|
+  
+  *Note: remember to change the "file_location" to your location of storing the Tennis environment before use. file_location is defined in function "create_env()" in the main file for all 3 packages.* 
+  
+  To see the difference of self_play and self-play-test, please refer to Report.
+  
+  It is recommended to take a quick glance at my Report since it discusses a **problem** about adding **batchnorm layer** in the agent model, which may lead to agent's **not able to solve** the environment even though the other parts of the code is correct.
 
 ## Part 5: Demo for trained agent
+![Demo of my trained maddpg agents](https://github.com/CenturyLiu/RL-Project-Tennis/blob/master/plots/tennis_demo.gif)
+> Demo of the traing maddpg agents
+
+![self_play](https://github.com/CenturyLiu/RL-Project-Tennis/blob/master/plots/solution_238_gamma095.png)
+> self_play agent solves the Tennis environment in 238 episodes
+
+![maddpg_agent](https://github.com/CenturyLiu/RL-Project-Tennis/blob/master/plots/solution_maddpg_1225.png)
+> maddpg_agents solve the Tennis environment in 1225 episodes
